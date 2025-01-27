@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -34,9 +35,14 @@ public class MySecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                        authorizationManagerRequestMatcherRegistry.anyRequest()
-                                .authenticated())
+        http.authorizeHttpRequests(user ->
+                user.requestMatchers(new AntPathRequestMatcher("/"))
+                        .hasAnyRole("HR","MANAGER","EMPLOYEE")
+                        .requestMatchers(new AntPathRequestMatcher("/manager_info/**"))
+                        .hasRole("MANAGER")
+                        .requestMatchers(new AntPathRequestMatcher("/hr_info/**"))
+                        .hasRole("HR")
+                        .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
         return http.build();
