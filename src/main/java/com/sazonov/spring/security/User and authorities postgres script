@@ -1,0 +1,24 @@
+CREATE TABLE users (
+  username VARCHAR(15) PRIMARY KEY,
+  password VARCHAR(100),
+  enabled BOOLEAN -- Use BOOLEAN instead of TINYINT(1)
+);
+
+CREATE TABLE authorities (
+  username VARCHAR(15),
+  authority VARCHAR(25),
+  FOREIGN KEY (username) REFERENCES users(username)
+);
+
+INSERT INTO users (username, password, enabled)
+VALUES
+    ('zaur', '{noop}zaur', TRUE),  -- Use TRUE instead of 1
+    ('elena', '{noop}elena', TRUE),
+    ('ivan', '{noop}ivan', TRUE);
+
+INSERT INTO authorities (username, authority)
+VALUES
+    ('zaur', 'ROLE_EMPLOYEE'),
+    ('elena', 'ROLE_HR'),
+    ('ivan', 'ROLE_HR'),
+    ('ivan', 'ROLE_MANAGER');
